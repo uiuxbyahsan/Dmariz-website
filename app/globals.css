@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --gold: #c9a769;
+  --gold-light: #e8c896;
+  --maroon: #5c1a22;
+  --maroon-dark: #3d1117;
+  --cream: #faf6f0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--cream);
+  color: var(--maroon-dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle dot-grid texture used on cream sections */
+.dot-texture {
+  background-image: radial-gradient(
+    circle,
+    rgba(201, 167, 105, 0.16) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+}
+
+/* Flat rectangular buttons — single solid layer, sharp corners */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.9rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--maroon);
+  color: var(--cream);
+}
+.btn-primary:hover {
+  background-color: var(--maroon-dark);
+}
+
+.btn-gold {
+  background-color: var(--gold);
+  color: var(--maroon-dark);
+}
+.btn-gold:hover {
+  background-color: var(--gold-light);
+}
+
+.pill {
+  display: inline-block;
+  padding: 0.4rem 1.1rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--maroon-dark);
+}
