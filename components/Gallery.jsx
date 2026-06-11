@@ -175,7 +175,7 @@ export default function Gallery() {
             <button
               onClick={goPrev}
               aria-label="Previous slide"
-              className="flex h-12 w-12 items-center justify-center bg-maroon text-cream transition-colors hover:bg-maroon-dark"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-maroon text-cream transition-colors hover:bg-maroon-dark"
             >
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
                 <path
@@ -190,7 +190,7 @@ export default function Gallery() {
             <button
               onClick={goNext}
               aria-label="Next slide"
-              className="flex h-12 w-12 items-center justify-center bg-maroon text-cream transition-colors hover:bg-maroon-dark"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-maroon text-cream transition-colors hover:bg-maroon-dark"
             >
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
                 <path

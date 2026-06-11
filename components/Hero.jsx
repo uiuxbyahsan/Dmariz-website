@@ -9,6 +9,54 @@ import { motion } from "framer-motion";
 // gentle arc. On tablet only the center + two inner cards show; on mobile only
 // the center storefront photo remains.
 const CENTER = 2;
+
+// Mobile-only compact arc. The center storefront sits highest and largest; the
+// four others peek out from behind its edges, partially cropped by the viewport
+// (the section is overflow-hidden, so no horizontal scroll). Positions are vw
+// based so the spread scales cleanly across 375–414px. Order matches arcPhotos.
+const mobilePhotos = [
+  {
+    src: "/images/gallery/interior-lounge-1.jpg",
+    alt: "DžaMaris café interior lounge at Aria Mall",
+    rotate: -12,
+    z: 10,
+    pos: "left-[-7vw] top-[128px]",
+    size: "w-[30vw] max-w-[128px]",
+  },
+  {
+    src: "/images/gallery/wok-branded.jpg",
+    alt: "DžaMaris wok chicken stir-fry with rice and salad",
+    rotate: -7,
+    z: 20,
+    pos: "left-[7vw] top-[74px]",
+    size: "w-[34vw] max-w-[150px]",
+  },
+  {
+    src: "/images/gallery/aria-mall-exterior.jpg",
+    alt: "DžaMaris storefront at Aria Mall, Sarajevo with gold signage under a blue sky",
+    rotate: 0,
+    z: 30,
+    pos: "left-1/2 -translate-x-1/2 top-[16px]",
+    size: "w-[58vw] max-w-[240px]",
+  },
+  {
+    src: "/images/gallery/curry-piletina-branded.jpg",
+    alt: "DžaMaris curry piletina plate with fries and coleslaw",
+    rotate: 7,
+    z: 20,
+    pos: "right-[7vw] top-[74px]",
+    size: "w-[34vw] max-w-[150px]",
+  },
+  {
+    src: "/images/gallery/matcha-cocktail.jpg",
+    alt: "DžaMaris matcha latte and a berry cocktail",
+    rotate: 12,
+    z: 10,
+    pos: "right-[-7vw] top-[128px]",
+    size: "w-[30vw] max-w-[128px]",
+  },
+];
+
 const arcPhotos = [
   {
     src: "/images/gallery/interior-lounge-1.jpg",
@@ -70,8 +118,49 @@ export default function Hero() {
       className="relative overflow-hidden dot-texture pt-28 pb-16 md:pt-32 md:pb-20"
     >
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-8">
-        {/* Wide fanned photo spread */}
-        <div className="flex items-center justify-center">
+        {/* Mobile compact arc (all 5 photos, layered + peeking) */}
+        <div className="relative mx-auto h-[360px] w-full max-w-[420px] md:hidden">
+          {mobilePhotos.map((photo, i) => {
+            const dist = Math.abs(i - CENTER);
+            return (
+              // Outer wrapper holds absolute positioning (incl. -translate-x-1/2);
+              // the inner motion div owns the transform animation so framer-motion
+              // does not clobber the centering translate.
+              <div
+                key={photo.src}
+                className={`absolute ${photo.pos} ${photo.size}`}
+                style={{ zIndex: photo.z }}
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 40, rotate: 0, scale: 0.85 }}
+                  animate={{ opacity: 1, y: 0, rotate: photo.rotate, scale: 1 }}
+                  transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: dist * 0.12,
+                  }}
+                >
+                  <div className="rounded-2xl bg-white p-2 shadow-xl">
+                    <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl">
+                      <Image
+                        src={photo.src}
+                        alt={photo.alt}
+                        fill
+                        priority={photo.z === 30}
+                        loading={photo.z === 30 ? undefined : "lazy"}
+                        sizes="(max-width: 768px) 60vw, 240px"
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Wide fanned photo spread (tablet/desktop) */}
+        <div className="hidden items-center justify-center md:flex">
           {arcPhotos.map((photo, i) => {
             const dist = Math.abs(i - CENTER);
             return (
