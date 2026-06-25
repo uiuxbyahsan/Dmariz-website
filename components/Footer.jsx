@@ -24,6 +24,16 @@ function FacebookIcon({ className = "" }) {
   );
 }
 
+const footerColsVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+};
+
+const footerColVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+};
+
 export default function Footer() {
   return (
     <footer id="contact" className="bg-maroon-dark text-cream">
@@ -39,15 +49,21 @@ export default function Footer() {
           <h2 className="font-serif text-3xl md:text-4xl">
             Visit us <span className="italic text-gold">today</span>
           </h2>
-          <a href="#location" className="btn btn-gold">
+          <a href="#location" className="btn btn-outline-gold">
             View Location &amp; Hours
           </a>
         </div>
       </motion.div>
 
       {/* Footer row */}
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 py-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
+      <motion.div
+        variants={footerColsVariants}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+        className="mx-auto max-w-7xl px-5 sm:px-8 py-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        <motion.div variants={footerColVariants}>
           <Image
             src="/images/logo.png"
             alt="DžaMaris Caffe & Restaurant logo"
@@ -59,27 +75,27 @@ export default function Footer() {
             A family-run Caffe &amp; Restaurant serving authentic Bosnian
             comfort food in the heart of Sarajevo.
           </p>
-        </div>
+        </motion.div>
 
-        <div>
+        <motion.div variants={footerColVariants}>
           <h3 className="font-serif text-lg text-gold-light">Location</h3>
           <p className="mt-3 text-cream/70 text-sm leading-relaxed">
             Aria Mall, Sarajevo
             <br />
             Trebević, Miljevići bb
           </p>
-        </div>
+        </motion.div>
 
-        <div>
+        <motion.div variants={footerColVariants}>
           <h3 className="font-serif text-lg text-gold-light">Hours</h3>
           <p className="mt-3 text-cream/70 text-sm leading-relaxed">
             Mon – Sat: 07:00 – 22:00
             <br />
             Sunday: closed
           </p>
-        </div>
+        </motion.div>
 
-        <div>
+        <motion.div variants={footerColVariants}>
           <h3 className="font-serif text-lg text-gold-light">Contact</h3>
           <p className="mt-3 text-cream/70 text-sm leading-relaxed">
             +387 33 000 000
@@ -88,7 +104,7 @@ export default function Footer() {
           </p>
           <div className="mt-4 flex items-center gap-3">
             <a
-              href="https://instagram.com/dzammaris"
+              href="https://www.instagram.com/dzammaris"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="DžaMaris on Instagram"
@@ -97,7 +113,7 @@ export default function Footer() {
               <InstagramIcon className="w-6 h-6" />
             </a>
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/100063592327588"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="DžaMaris on Facebook"
@@ -106,8 +122,8 @@ export default function Footer() {
               <FacebookIcon className="w-6 h-6" />
             </a>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       <div className="border-t border-cream/10">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 py-6 text-center text-cream/50 text-xs">

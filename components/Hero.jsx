@@ -1,7 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { useRef, useState } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
+import AnimatedPhotoCard from "./AnimatedPhotoCard";
 
 // Wide, full-width spread of 5 tilted photo cards. Order is left → right; the
 // center card (index 2) is largest and straightest and sits slightly raised,
@@ -20,40 +27,50 @@ const mobilePhotos = [
     alt: "DžaMaris café interior lounge at Aria Mall",
     rotate: -12,
     z: 10,
-    pos: "left-[-7vw] top-[128px]",
-    size: "w-[30vw] max-w-[128px]",
+    pos: "left-[-6vw] top-[106px]",
+    size: "w-[26vw] max-w-[108px]",
+    dur: 5,
+    amp: 4,
   },
   {
     src: "/images/gallery/wok-branded.jpg",
     alt: "DžaMaris wok chicken stir-fry with rice and salad",
     rotate: -7,
     z: 20,
-    pos: "left-[7vw] top-[74px]",
-    size: "w-[34vw] max-w-[150px]",
+    pos: "left-[7vw] top-[62px]",
+    size: "w-[29vw] max-w-[125px]",
+    dur: 4.5,
+    amp: 4,
   },
   {
     src: "/images/gallery/aria-mall-exterior.jpg",
     alt: "DžaMaris storefront at Aria Mall, Sarajevo with gold signage under a blue sky",
     rotate: 0,
     z: 30,
-    pos: "left-1/2 -translate-x-1/2 top-[16px]",
-    size: "w-[58vw] max-w-[240px]",
+    pos: "left-1/2 -translate-x-1/2 top-[14px]",
+    size: "w-[50vw] max-w-[200px]",
+    dur: 6,
+    amp: 6,
   },
   {
     src: "/images/gallery/curry-piletina-branded.jpg",
     alt: "DžaMaris curry piletina plate with fries and coleslaw",
     rotate: 7,
     z: 20,
-    pos: "right-[7vw] top-[74px]",
-    size: "w-[34vw] max-w-[150px]",
+    pos: "right-[7vw] top-[62px]",
+    size: "w-[29vw] max-w-[125px]",
+    dur: 5.5,
+    amp: 4,
   },
   {
     src: "/images/gallery/matcha-cocktail.jpg",
     alt: "DžaMaris matcha latte and a berry cocktail",
     rotate: 12,
     z: 10,
-    pos: "right-[-7vw] top-[128px]",
-    size: "w-[30vw] max-w-[128px]",
+    pos: "right-[-6vw] top-[106px]",
+    size: "w-[26vw] max-w-[108px]",
+    dur: 4,
+    amp: 4,
   },
 ];
 
@@ -62,147 +79,211 @@ const arcPhotos = [
     src: "/images/gallery/interior-lounge-1.jpg",
     alt: "DžaMaris café interior lounge at Aria Mall",
     rotate: -11,
-    y: 104,
+    y: 86,
     z: 10,
-    box: "w-[196px] h-[256px] xl:w-[214px] xl:h-[280px]",
+    box: "w-[164px] h-[212px] xl:w-[178px] xl:h-[232px]",
     show: "hidden lg:block",
     overlap: "lg:-ml-5",
+    dur: 5,
+    amp: 5,
   },
   {
     src: "/images/gallery/wok-branded.jpg",
     alt: "DžaMaris wok chicken stir-fry with rice and salad",
     rotate: -6,
-    y: 46,
+    y: 38,
     z: 20,
-    box: "w-[228px] h-[298px] sm:w-[244px] sm:h-[318px] xl:w-[258px] xl:h-[336px]",
+    box: "w-[190px] h-[248px] sm:w-[204px] sm:h-[264px] xl:w-[214px] xl:h-[280px]",
     show: "hidden md:block",
     overlap: "md:-ml-4 lg:-ml-3",
+    dur: 4.5,
+    amp: 5,
   },
   {
     src: "/images/gallery/aria-mall-exterior.jpg",
     alt: "DžaMaris storefront at Aria Mall, Sarajevo with gold signage under a blue sky",
     rotate: 0,
-    y: -28,
+    y: -24,
     z: 30,
-    box: "w-[290px] h-[376px] sm:w-[316px] sm:h-[410px] lg:w-[340px] lg:h-[440px]",
+    box: "w-[242px] h-[314px] sm:w-[264px] sm:h-[342px] lg:w-[282px] lg:h-[366px]",
     show: "block",
     overlap: "md:-ml-3 lg:-ml-2",
     priority: true,
+    dur: 6,
+    amp: 7,
   },
   {
     src: "/images/gallery/curry-piletina-branded.jpg",
     alt: "DžaMaris curry piletina plate with fries and coleslaw",
     rotate: 6,
-    y: 46,
+    y: 38,
     z: 20,
-    box: "w-[228px] h-[298px] sm:w-[244px] sm:h-[318px] xl:w-[258px] xl:h-[336px]",
+    box: "w-[190px] h-[248px] sm:w-[204px] sm:h-[264px] xl:w-[214px] xl:h-[280px]",
     show: "hidden md:block",
     overlap: "md:-ml-3 lg:-ml-2",
+    dur: 5.5,
+    amp: 5,
   },
   {
     src: "/images/gallery/matcha-cocktail.jpg",
     alt: "DžaMaris matcha latte and a berry cocktail",
     rotate: 11,
-    y: 104,
+    y: 86,
     z: 10,
-    box: "w-[196px] h-[256px] xl:w-[214px] xl:h-[280px]",
+    box: "w-[164px] h-[212px] xl:w-[178px] xl:h-[232px]",
     show: "hidden lg:block",
     overlap: "lg:-ml-3",
+    dur: 4,
+    amp: 5,
   },
 ];
 
+// Desktop arc card: wraps the shared AnimatedPhotoCard (entrance → idle float →
+// hover) and adds a scroll-linked parallax/fade as the hero exits. Outer cards
+// drift further than the center for depth.
+function ArcCard({ photo, index, scrollYProgress, reduce }) {
+  const [hovered, setHovered] = useState(false);
+  const dist = Math.abs(index - CENTER);
+  const fromLeft = index < CENTER;
+  const isCenter = index === CENTER;
+
+  const parallaxShift = -(50 + dist * 55);
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [0, parallaxShift]);
+  const parallaxOpacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
+
+  const spring = {
+    type: "spring",
+    stiffness: isCenter ? 80 : 95,
+    damping: isCenter ? 11 : 14,
+    delay: 0.15 + dist * 0.14,
+  };
+
+  return (
+    <motion.div
+      className={`relative ${photo.show} ${photo.overlap}`}
+      style={{
+        y: reduce ? undefined : parallaxY,
+        opacity: reduce ? undefined : parallaxOpacity,
+        zIndex: hovered ? 50 : photo.z,
+      }}
+    >
+      <AnimatedPhotoCard
+        trigger="load"
+        rotate={photo.rotate}
+        restY={photo.y}
+        floatDur={photo.dur}
+        floatAmp={photo.amp}
+        entranceX={isCenter ? 0 : fromLeft ? -170 : 170}
+        entranceY={isCenter ? -175 : 85}
+        entranceRotateExtra={isCenter ? 0 : fromLeft ? -8 : 8}
+        transition={spring}
+        onHoverChange={setHovered}
+        className="relative"
+      >
+        <div className="rounded-2xl bg-white p-2.5 shadow-xl transition-shadow duration-300 hover:shadow-2xl">
+          <div className={`relative overflow-hidden rounded-2xl ${photo.box}`}>
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              priority={photo.priority}
+              loading={photo.priority ? undefined : "lazy"}
+              sizes="(max-width: 640px) 312px, 332px"
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </AnimatedPhotoCard>
+    </motion.div>
+  );
+}
+
+// Mobile compact-arc card: same shared animation, but the outer wrapper keeps
+// the absolute positioning (incl. -translate-x-1/2) so the inner motion
+// transform never clobbers the centering translate.
+function MobileCard({ photo, index }) {
+  const dist = Math.abs(index - CENTER);
+
+  return (
+    <div
+      className={`absolute ${photo.pos} ${photo.size}`}
+      style={{ zIndex: photo.z }}
+    >
+      <AnimatedPhotoCard
+        trigger="load"
+        rotate={photo.rotate}
+        restY={0}
+        floatDur={photo.dur}
+        floatAmp={photo.amp}
+        entranceX={0}
+        entranceY={40}
+        entranceRotateExtra={0}
+        hoverScale={1.06}
+        transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 + dist * 0.12 }}
+        className="relative"
+      >
+        <div className="rounded-2xl bg-white p-2 shadow-xl transition-shadow duration-300 hover:shadow-2xl">
+          <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl">
+            <Image
+              src={photo.src}
+              alt={photo.alt}
+              fill
+              priority={photo.z === 30}
+              loading={photo.z === 30 ? undefined : "lazy"}
+              sizes="(max-width: 768px) 60vw, 240px"
+              className="object-cover"
+            />
+          </div>
+        </div>
+      </AnimatedPhotoCard>
+    </div>
+  );
+}
+
 export default function Hero() {
+  const sectionRef = useRef(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const handleScrollToMenu = (e) => {
+    e.preventDefault();
+    document
+      .getElementById("menu")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <section
+      ref={sectionRef}
       id="top"
-      className="relative overflow-hidden dot-texture pt-28 pb-16 md:pt-32 md:pb-20"
+      className="relative overflow-hidden dot-texture pt-24 pb-12 md:pt-28 md:pb-16"
     >
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-8">
         {/* Mobile compact arc (all 5 photos, layered + peeking) */}
-        <div className="relative mx-auto h-[360px] w-full max-w-[420px] md:hidden">
-          {mobilePhotos.map((photo, i) => {
-            const dist = Math.abs(i - CENTER);
-            return (
-              // Outer wrapper holds absolute positioning (incl. -translate-x-1/2);
-              // the inner motion div owns the transform animation so framer-motion
-              // does not clobber the centering translate.
-              <div
-                key={photo.src}
-                className={`absolute ${photo.pos} ${photo.size}`}
-                style={{ zIndex: photo.z }}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 40, rotate: 0, scale: 0.85 }}
-                  animate={{ opacity: 1, y: 0, rotate: photo.rotate, scale: 1 }}
-                  transition={{
-                    duration: 0.6,
-                    ease: "easeOut",
-                    delay: dist * 0.12,
-                  }}
-                >
-                  <div className="rounded-2xl bg-white p-2 shadow-xl">
-                    <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl">
-                      <Image
-                        src={photo.src}
-                        alt={photo.alt}
-                        fill
-                        priority={photo.z === 30}
-                        loading={photo.z === 30 ? undefined : "lazy"}
-                        sizes="(max-width: 768px) 60vw, 240px"
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            );
-          })}
+        <div className="relative mx-auto h-[300px] w-full max-w-[420px] md:hidden">
+          {mobilePhotos.map((photo, i) => (
+            <MobileCard key={photo.src} photo={photo} index={i} />
+          ))}
         </div>
 
         {/* Wide fanned photo spread (tablet/desktop) */}
         <div className="hidden items-center justify-center md:flex">
-          {arcPhotos.map((photo, i) => {
-            const dist = Math.abs(i - CENTER);
-            return (
-              <motion.div
-                key={photo.src}
-                className={`relative ${photo.show} ${photo.overlap}`}
-                style={{ zIndex: photo.z }}
-                initial={{ opacity: 0, y: 60, rotate: 0, scale: 0.85 }}
-                animate={{
-                  opacity: 1,
-                  y: photo.y,
-                  rotate: photo.rotate,
-                  scale: 1,
-                }}
-                transition={{
-                  duration: 0.7,
-                  ease: "easeOut",
-                  delay: dist * 0.12,
-                }}
-              >
-                <div className="rounded-2xl bg-white p-2.5 shadow-xl">
-                  <div
-                    className={`relative overflow-hidden rounded-2xl ${photo.box}`}
-                  >
-                    <Image
-                      src={photo.src}
-                      alt={photo.alt}
-                      fill
-                      priority={photo.priority}
-                      loading={photo.priority ? undefined : "lazy"}
-                      sizes="(max-width: 640px) 312px, 332px"
-                      className="object-cover"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
+          {arcPhotos.map((photo, i) => (
+            <ArcCard
+              key={photo.src}
+              photo={photo}
+              index={i}
+              scrollYProgress={scrollYProgress}
+              reduce={reduce}
+            />
+          ))}
         </div>
 
         {/* Centered text block */}
-        <div className="relative z-10 mx-auto mt-16 max-w-2xl text-center md:mt-20">
+        <div className="relative z-10 mx-auto mt-10 max-w-2xl text-center md:mt-12">
           <motion.span
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -216,7 +297,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.95 }}
-            className="mt-6 font-serif text-4xl leading-[1.08] text-maroon-dark sm:text-5xl lg:text-6xl"
+            className="mt-5 font-serif text-3xl leading-[1.08] text-maroon-dark sm:text-4xl lg:text-5xl"
           >
             Real flavors served
             <br />
@@ -234,32 +315,27 @@ export default function Hero() {
             served with a warm Bosnian welcome.
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.2 }}
-            className="mt-8 flex justify-center"
-          >
-            <a href="#location" className="btn btn-primary">
-              Find Us
-            </a>
-          </motion.div>
-
-          {/* Scroll indicator */}
+          {/* Down-arrow scroll cue (replaces the old "Explore More" button) */}
           <motion.a
             href="#menu"
+            onClick={handleScrollToMenu}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.4 }}
-            className="mt-12 inline-flex flex-col items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-maroon-dark/60 transition-colors hover:text-maroon"
+            transition={{ duration: 0.6, delay: 1.2 }}
+            aria-label="Scroll to our menu"
+            className="mt-9 inline-flex justify-center text-gold-dark transition-colors hover:text-maroon"
           >
-            Scroll to Explore
             <motion.svg
               viewBox="0 0 24 24"
-              className="h-5 w-5"
+              className="h-9 w-9"
               fill="none"
-              animate={{ y: [0, 7, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              animate={{ y: [0, 8, 0] }}
+              transition={{
+                duration: 1.4,
+                repeat: Infinity,
+                repeatType: "mirror",
+                ease: "easeInOut",
+              }}
             >
               <path
                 d="M6 9l6 6 6-6"

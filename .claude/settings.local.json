@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//usr/local/bin/**)",
+      "Bash(echo \"PATH=$PATH\")",
+      "Bash(command -v brew)",
+      "Read(//Users/mac/**)",
+      "Bash(/usr/local/bin/node --version)",
+      "Bash(/usr/local/bin/npm --version)",
+      "Bash(export PATH=\"/usr/local/bin:$PATH\")",
+      "Bash(npm --version)",
+      "Read(//private/tmp/ghcli/gh_2.94.0_macOS_amd64/bin/**)",
+      "Bash(/tmp/ghcli/gh_2.94.0_macOS_amd64/bin/gh --version)"
+    ]
+  }
+}

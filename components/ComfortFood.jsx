@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { DotCluster } from "./decorations/Decorations";
+import AnimatedPhotoCard from "./AnimatedPhotoCard";
 
 export default function ComfortFood() {
   return (
@@ -22,14 +23,18 @@ export default function ComfortFood() {
 
           <div className="relative">
             <div className="absolute inset-0 bg-white shadow-xl -rotate-[5deg] rounded-2xl" />
-            <motion.div
-              initial={{ opacity: 0, x: -40, rotate: 0 }}
-              whileInView={{ opacity: 1, x: 0, rotate: 3 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="relative bg-white p-3 shadow-2xl rounded-2xl"
+            <AnimatedPhotoCard
+              trigger="inView"
+              rotate={3}
+              restY={0}
+              floatDur={5.4}
+              floatAmp={6}
+              entranceX={-40}
+              entranceY={0}
+              entranceRotateExtra={3}
+              className="relative bg-white p-3 shadow-xl rounded-2xl transition-shadow duration-300 hover:shadow-2xl"
             >
-              <div className="relative w-[280px] h-[340px] sm:w-[380px] sm:h-[460px] overflow-hidden">
+              <div className="relative w-[280px] h-[340px] sm:w-[380px] sm:h-[460px] overflow-hidden rounded-2xl">
                 <Image
                   src="/images/gallery/wok-chicken-plate-1.jpg"
                   alt="A plate of DžaMaris wok chicken with rice held in the café interior"
@@ -39,7 +44,7 @@ export default function ComfortFood() {
                   className="object-cover"
                 />
               </div>
-            </motion.div>
+            </AnimatedPhotoCard>
           </div>
         </div>
 
@@ -60,7 +65,12 @@ export default function ComfortFood() {
             Mushroom Sauce, alongside classics like Ramstek and freshly grilled
             Ćevapi, each served with rice, fries and a crisp seasonal salad.
           </p>
-          <a href="#gallery" className="btn btn-primary mt-8">
+          <a
+            href="https://www.instagram.com/dzammaris"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary mt-8"
+          >
             About Us
           </a>
         </motion.div>
